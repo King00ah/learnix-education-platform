@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{Phase Title}} - Learnix</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* إضافة بعض التنسيقات الأساسية لضمان عمل الصفحة كملف HTML مستقل */
+        body {
+            margin: 0;
+            background-color: #0d1117;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">Learnix</div>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="paths.html" class="active">المسارات</a>
+                <a href="about.html">حول المشروع</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-cta" onclick="window.location.href='paths.html'">ابدأ الآن</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="lesson-page-layout">
+        <!-- Sidebar -->
+        <aside class="lesson-sidebar">
+            <h3 class="sidebar-title">خارطة الطريق التعليمية</h3>
+            <div class="roadmap-list" id="sidebar-nav">
+                <!-- Template Item: Use 'active' class for current phase -->
+                <div class="roadmap-item active" data-target="hero">
+                    <span class="phase-num">01</span>
+                    <span class="phase-name">المقدمة</span>
+                </div>
+                <div class="roadmap-item" data-target="explanation">
+                    <span class="phase-num">02</span>
+                    <span class="phase-name">الشرح التعليمي</span>
+                </div>
+                <div class="roadmap-item" data-target="tools">
+                    <span class="phase-num">03</span>
+                    <span class="phase-name">شرح الأدوات</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lesson-content-area">
+            <!-- Hero Section -->
+            <section id="hero" class="lesson-hero-section content-section">
+                <h1>{{Phase Title}}</h1>
+                <p class="intro-text">{{Intro Text - شرح مقدمة المرحلة التعليمية كما في الصور}}</p>
+            </section>
+
+            <!-- Card Section (Explanation) -->
+            <section id="explanation" class="lesson-card-section content-section">
+                <div class="lesson-inner-card">
+                    <h2 class="section-title-cyan">{{Section Title}}</h2>
+                    <p>{{Explanation Content - شرح تعليمي مفصل للمتعلم}}</p>
+                    
+                    <div class="lesson-image-container">
+                        <div class="image-placeholder">
+                            <img src="{{Image URL}}" alt="{{Image Alt Text}}">
+                            <div class="image-description">
+                                [وصف الصورة: {{Image Detailed Description كما في الصور}}]
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="example-title">مثال عملي:</h4>
+                        <p>{{Practical Example Content - أمثلة واقعية لتثبيت المعلومة}}</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Section: Tools Explanation -->
+            <section id="tools" class="lesson-card-section content-section">
+                <div class="lesson-inner-card">
+                    <h2 class="section-title-cyan">شرح الأدوات المستخدمة</h2>
+                    <p>{{Explanation - شرح لماذا نستخدم هذه الأدوات وكيف تسهل علينا العمل والتعلم في هذه المرحلة}}</p>
+                    
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <span class="tool-icon">{{Tool 1 Icon}}</span>
+                                <h3 class="tool-name">{{Tool 1 Name}}</h3>
+                            </div>
+                            <p class="tool-desc">{{Tool 1 Description - ما هي هذه الأداة وكيف تستخدمها لتحقيق أهداف هذه المرحلة؟}}</p>
+                        </div>
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <span class="tool-icon">{{Tool 2 Icon}}</span>
+                                <h3 class="tool-name">{{Tool 2 Name}}</h3>
+                            </div>
+                            <p class="tool-desc">{{Tool 2 Description - ما هي هذه الأداة وكيف تستخدمها لتحقيق أهداف هذه المرحلة؟}}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Footer -->
+            <section class="lesson-navigation-footer">
+                <button class="primary-button" onclick="window.location.href='paths.html'">
+                    العودة للمسارات
+                </button>
+                <button class="primary-button-outline" onclick="window.location.href='{{Next Phase URL}}'">
+                    الدرس القادم: {{Next Phase Title}}
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">Learnix</div>
+            <p>© 2024 جميع الحقوق محفوظة - منصة تعليمية مجانية بالكامل</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarItems = document.querySelectorAll('.roadmap-item');
+            const sections = document.querySelectorAll('.content-section');
+
+            // التمرير السلس عند النقر على عناصر شريط التنقل
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetId = item.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        const offset = 100; // مسافة تعويض للهيدر الثابت
+                        const top = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                        
+                        window.scrollTo({
+                            top: top,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // مراقب التقاطع (Intersection Observer) لتمييز القسم النشط في الشريط الجانبي
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -70% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        sidebarItems.forEach(item => {
+                            item.classList.toggle('active', item.getAttribute('data-target') === id);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>

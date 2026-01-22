@@ -1,0 +1,552 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منهاج Learnix: احتراف UI/UX بالذكاء الاصطناعي</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        :root {
+            --sidebar-width: 320px;
+        }
+        body {
+            background-color: #050505;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .learning-container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 2rem;
+        }
+        /* Sidebar Styles */
+        .learning-sidebar {
+            width: var(--sidebar-width);
+            border-left: 1px solid var(--border-color);
+            padding: 3rem 1.5rem;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            background: rgba(5, 5, 5, 0.4);
+            backdrop-filter: blur(12px);
+        }
+        .sidebar-header {
+            margin-bottom: 2.5rem;
+        }
+        .sidebar-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .progress-line {
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 16%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .curriculum-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .nav-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+            width: 100%;
+            color: var(--text-secondary);
+        }
+        .nav-step:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+        .nav-step.active {
+            background: var(--accent-soft);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        .step-idx {
+            font-family: monospace;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* Content Area Styles */
+        .learning-content {
+            flex: 1;
+            padding: 4rem 2rem 8rem;
+            max-width: 900px;
+        }
+        .content-block {
+            display: none;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .content-block.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lesson Typography & Elements */
+        .lesson-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lesson-title-cyan {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+        .lesson-text {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.9;
+        }
+        .inner-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Illustrative Images */
+        .illustrative-box {
+            width: 100%;
+            border-radius: 2rem;
+            overflow: hidden;
+            margin: 3rem 0;
+            border: 1px solid var(--border-color);
+            background: #111;
+            position: relative;
+        }
+        .illustrative-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .illustrative-box:hover img {
+            opacity: 1;
+        }
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* AI Guide Card */
+        .ai-guide-card {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(0, 0, 0, 0.5));
+            border: 1px dashed var(--accent-color);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            margin: 3rem 0;
+            position: relative;
+        }
+        .ai-badge {
+            position: absolute;
+            top: -15px;
+            right: 25px;
+            background: var(--accent-color);
+            color: #000;
+            padding: 4px 15px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        /* Interactive Prompt Styles */
+        .prompt-container {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin-top: 1.5rem;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .prompt-text {
+            font-family: monospace;
+            font-size: 1rem;
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .copy-btn {
+            background: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(20, 184, 166, 0.3);
+        }
+        .copy-btn.success {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .tool-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        .tool-card h4 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Project Block */
+        .project-brief {
+            background: #111;
+            padding: 4rem;
+            border-radius: 3rem;
+            border: 2px solid var(--accent-color);
+            text-align: center;
+            box-shadow: 0 0 40px rgba(20, 184, 166, 0.1);
+        }
+
+        /* Footer Nav Buttons */
+        .lesson-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 1000px) {
+            .learning-container { flex-direction: column; gap: 0; }
+            .learning-sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: sticky; 
+                top: 60px; 
+                border-left: none; 
+                border-bottom: 1px solid var(--border-color); 
+                padding: 1.5rem 1rem;
+                z-index: 10;
+            }
+            .sidebar-header { margin-bottom: 1rem; text-align: center; }
+            .curriculum-nav {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 0.5rem;
+                padding-bottom: 0.5rem;
+                scrollbar-width: none;
+            }
+            .curriculum-nav::-webkit-scrollbar { display: none; }
+            .nav-step {
+                padding: 0.6rem 1rem;
+                white-space: nowrap;
+                width: auto;
+                font-size: 0.9rem;
+            }
+            .learning-content { padding: 2rem 1rem 4rem; }
+            .inner-card { padding: 1.5rem; border-radius: 1.5rem; }
+            .lesson-title { font-size: 2.2rem; margin-bottom: 1.5rem; }
+            .project-brief { padding: 2.5rem 1.5rem; border-radius: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">Learnix</div>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="index.html" class="active">المسارات</a>
+                <button onclick="window.location.href='index.html'">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="learning-container">
+        <!-- Sidebar Navigation -->
+        <aside class="learning-sidebar">
+            <div class="sidebar-header">
+                <h3>خطة التعلم: UI/UX</h3>
+                <div class="progress-line"><div class="progress-fill" id="p-fill"></div></div>
+            </div>
+            <div class="curriculum-nav" id="cur-nav">
+                <button class="nav-step active" data-id="1"><span class="step-idx">01</span> عقلية المصمم والبحث بـ AI</button>
+                <button class="nav-step" data-id="2"><span class="step-idx">02</span> هندسة المعلومات والـ Sitemap</button>
+                <button class="nav-step" data-id="3"><span class="step-idx">03</span> النماذج السلكية (Wireframing)</button>
+                <button class="nav-step" data-id="4"><span class="step-idx">04</span> إتقان أدوات Figma الحديثة</button>
+                <button class="nav-step" data-id="5"><span class="step-idx">05</span> التصميم البصري (UI Design)</button>
+                <button class="nav-step" data-id="6"><span class="step-idx">06</span> مشروع التخرج المستقل</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="learning-content">
+            <!-- Phase 1: Mindset & Research -->
+            <div class="content-block active" id="block-1">
+                <h1 class="lesson-title">عقلية المصمم والبحث بـ الذكاء الاصطناعي</h1>
+                <p class="lesson-text">قبل أن نبدأ برسم الخطوط، علينا فهم المشكلة. التصميم ليس مجرد تزيين، بل هو حل لمشكلات المستخدمين بطريقة ذكية وسهلة.</p>
+                
+                <div class="illustrative-box">
+                    <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&q=80&w=1200" alt="Design Thinking Cycle">
+                    <div class="image-caption">مراحل التفكير التصميمي: تعاطف، تعريف، ابتكار، نموذج، اختبار</div>
+                </div>
+
+                <div class="inner-card">
+                    <h2 class="lesson-title-cyan">كيف تبدأ بذكاء؟</h2>
+                    <p>في هذه المرحلة، سنستخدم أدوات الذكاء الاصطناعي لاختصار أسابيع من البحث التقليدي.</p>
+                    <ul style="list-style: none; padding: 0; margin-top: 1.5rem;">
+                        <li style="margin-bottom: 1rem;">✅ <strong>تحديد المشكلة:</strong> ما هو التحدي الذي يواجهه المستخدم؟</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>تحليل المنافسين:</strong> ماذا يفعل الآخرون وكيف نتفوق عليهم؟</li>
+                    </ul>
+                </div>
+
+                <div class="ai-guide-card">
+                    <span class="ai-badge">تكامل AI 🤖</span>
+                    <h4>توليد شخصيات المستخدمين (User Personas)</h4>
+                    <p>بدلاً من قضاء ساعات في التخمين، اطلب من <strong>Gemini</strong> التالي:</p>
+                    <div class="prompt-container">
+                        <div class="prompt-text" id="prompt-1">
+                            "قم بإنشاء 3 شخصيات لمستخدمين محتملين لتطبيق طبي، مع ذكر أهدافهم، نقاط الألم لديهم، وسلوكهم التقني."
+                        </div>
+                        <button class="copy-btn" onclick="copyText('prompt-1', this)">نسخ البرومبت</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2: Sitemap & IA -->
+            <div class="content-block" id="block-2">
+                <h1 class="lesson-title">هندسة المعلومات والـ Sitemap</h1>
+                <p class="lesson-text">الـ Sitemap هي الخارطة التي تضمن عدم ضياع المستخدم داخل تطبيقك. سنقوم ببناء هيكل منطقية يسهل التنقل.</p>
+                
+                <div class="illustrative-box">
+                    <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?auto=format&fit=crop&q=80&w=1200" alt="Information Architecture Diagram">
+                    <div class="image-caption">هندسة المعلومات تنظم المحتوى ليكون بديهياً للمستخدم.</div>
+                </div>
+
+                <div class="ai-guide-card">
+                    <span class="ai-badge">أداة Relume AI ⚡</span>
+                    <h4>بناء الهيكل في ثوانٍ</h4>
+                    <p>سنستخدم أداة <strong>Relume AI</strong>. بمجرد كتابة وصف لمشروعك، ستقوم الأداة بتوليد Sitemap كاملة وهيكل سلكي (Wireframe) مقترح، مما يوفر عليك أياماً من العمل اليدوي.</p>
+                </div>
+            </div>
+
+            <!-- Phase 3: Wireframing -->
+            <div class="content-block" id="block-3">
+                <h1 class="lesson-title">النماذج السلكية (Wireframing)</h1>
+                <p class="lesson-text">هنا ننتقل من الفكرة إلى الشكل. سنتعلم كيف نرسم الواجهات باللون الأبيض والأسود فقط للتركيز على الوظيفة والترتيب قبل الألوان.</p>
+                
+                <div class="inner-card">
+                    <h2 class="lesson-title-cyan">لماذا الـ Wireframes؟</h2>
+                    <p>لأن الألوان والصور قد تشتت ذهنك عن المشاكل الهيكلية. نحن نبني "العظم" قبل وضع "الجلد".</p>
+                </div>
+
+                <div class="illustrative-box">
+                    <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&q=80&w=1200" alt="Wireframes">
+                    <div class="image-caption">النماذج السلكية تركز على تجربة الاستخدام وليس المظهر النهائي.</div>
+                </div>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h4>Figma Basics</h4>
+                        <p>استخدام الأشكال الأساسية والنصوص لتمثيل الأزرار والصور بشكل أولي ومبسط.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 4: Figma Mastery -->
+            <div class="content-block" id="block-4">
+                <h1 class="lesson-title">إتقان أدوات Figma الحديثة</h1>
+                <p class="lesson-text">حان وقت السحر. سنتعمق في أدوات Figma التي تجعل تصميمك يبدو احترافياً وقابلاً للتوسع.</p>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h4>Auto Layout</h4>
+                        <p>كيف تجعل تصميمك يستجيب تلقائياً لحجم المحتوى، وهو سر التصميم المتجاوب.</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Components</h4>
+                        <p>بناء عناصر قابلة لإعادة الاستخدام مثل الأزرار والقوائم لتوفير الوقت وضمان التناسق.</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Variables</h4>
+                        <p>استخدام المتغيرات لإدارة الألوان والخطوط والتباعدات بذكاء.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 5: Visual Design -->
+            <div class="content-block" id="block-5">
+                <h1 class="lesson-title">التصميم البصري (UI Design)</h1>
+                <p class="lesson-text">الآن نضيف الحياة لتصاميمنا. سنتعلم نظريات الألوان، الخطوط، وكيفية خلق تسلسل هرمي بصري يجذب العين.</p>
+                
+                <div class="illustrative-box">
+                    <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=1200" alt="Modern UI Design Principles">
+                    <div class="image-caption">أمثلة على التباين، التوازن، والخطوط في التصميم الحديث</div>
+                </div>
+
+                <div class="ai-guide-card">
+                    <span class="ai-badge">إلهام AI ✨</span>
+                    <h4>توليد لوحات الألوان والخطوط</h4>
+                    <p>استخدم <strong>Gemini</strong> لاقتراح لوحة ألوان عصرية. اطلب: "اقترح لوحة ألوان عصرية لتطبيق تعليمي تعطي شعوراً بالثقة والطاقة، مع ذكر أكواد الـ Hex للألوان."</p>
+                </div>
+            </div>
+
+            <!-- Phase 6: Independent Project -->
+            <div class="content-block" id="block-6">
+                <div class="project-brief">
+                    <h1 class="lesson-title" style="font-size: 3rem; background: var(--accent-color); -webkit-text-fill-color: var(--bg-color);">مشروع التخرج المستقل 🏆</h1>
+                    <p class="lesson-text" style="color: #fff; margin-top: 1rem;">لقد اجتزت كل المراحل! الآن حان وقت الاختبار الحقيقي. مهمتك هي اختيار فكرة تطبيق وتنفيذها بالكامل.</p>
+                    
+                    <div style="text-align: right; margin-top: 2.5rem; color: #fff;">
+                        <h4 style="color: var(--accent-light); margin-bottom: 1rem;">خطوات مشروعك:</h4>
+                        <ul style="padding-right: 1.5rem; line-height: 2;">
+                            <li>🔍 <strong>البحث:</strong> قم بعمل بحث كامل بمساعدة Gemini.</li>
+                            <li>🏗️ <strong>الهيكل:</strong> ارسم الـ Sitemap في Relume.</li>
+                            <li>📐 <strong>النماذج:</strong> ابنِ الـ Wireframes في Figma.</li>
+                            <li>🎨 <strong>التصميم:</strong> حولها إلى شاشات ملونة نهائية (على الأقل 5 شاشات).</li>
+                        </ul>
+                    </div>
+
+                    <button class="primary-button" style="margin: 4rem auto 0;" onclick="alert('مبروك على إنهاء المسار! أنت الآن تمتلك المهارات الأساسية لتكون مصمم UI/UX مستقل. ابدأ بمشروعك الأول اليوم!')">
+                        أنا جاهز للانطلاق في مشروعي المستقل
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="lesson-nav-buttons">
+                <button class="secondary-button" id="prev-btn">الدرس السابق</button>
+                <button class="primary-button" id="next-btn">الدرس التالي</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // دالة نسخ النص إلى الحافظة
+        function copyText(elementId, btn) {
+            const text = document.getElementById(elementId).innerText.replace(/"/g, '');
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'تم النسخ! ✅';
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('success');
+                }, 2000);
+            }).catch(err => {
+                console.error('فشل النسخ: ', err);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const steps = document.querySelectorAll('.nav-step');
+            const blocks = document.querySelectorAll('.content-block');
+            const fill = document.getElementById('p-fill');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            let current = 1;
+
+            function update(id) {
+                current = id;
+                // Update active block
+                blocks.forEach(b => b.classList.remove('active'));
+                document.getElementById(`block-${id}`).classList.add('active');
+                
+                // Update sidebar
+                steps.forEach(s => s.classList.remove('active'));
+                document.querySelector(`[data-id="${id}"]`).classList.add('active');
+                
+                // Update progress
+                fill.style.width = `${(id / 6) * 100}%`;
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Update buttons
+                prevBtn.disabled = id === 1;
+                nextBtn.textContent = id === 6 ? 'إنهاء المسار والعودة' : 'الدرس التالي';
+            }
+
+            steps.forEach(s => {
+                s.addEventListener('click', () => {
+                    update(parseInt(s.dataset.id));
+                });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (current < 6) {
+                    update(current + 1);
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (current > 1) {
+                    update(current - 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
